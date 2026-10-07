@@ -1,44 +1,105 @@
-import { StyleSheet, Text, View } from "react-native";
+import { recipes, type Recipe } from "@/data/recipes";
+import { useState } from "react";
+import {
+  FlatList, Pressable, StyleSheet, Text, TextInput, View
+} from "react-native";
 
-// This is the home screen (route "/").
-// Week 1: change the two lines marked 👇, run the app, commit, push.
 export default function Index() {
-  // 👇 Week 1: replace with your name
-  const studentName = "Lizbeth";
-  // 👇 Week 1: replace with something you want to build this quarter
-  const appIdea = "an app where I can search and save recipes";
+  const [query, setQuery] = useState("");
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>DEV 272 · Mobile Application Development</Text>
-      <Text style={styles.body}>Hello, I am {studentName}.</Text>
-      <Text style={styles.body}>This quarter I want to build {appIdea}.</Text>
-      <Text style={styles.hint}>Edit src/app/index.tsx to change this screen.</Text>
+    <FlatList
+      data={recipes}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => <RecipeRow recipe={item} />}
+      ListHeaderComponent={
+        <View>
+          <Text style={styles.title}>My Recipes</Text>
+
+          <View style={styles.searchRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="Search recipes"
+              value={query}
+              onChangeText={setQuery}
+              autoCapitalize="none"
+              returnKeyType="search"
+            />
+
+            <Pressable
+              style={styles.button}
+              onPress={() => console.log("Search:", query)}
+            >
+              <Text style={styles.buttonText}>Search</Text>
+            </Pressable>
+          </View>
+        </View>
+      }
+      contentContainerStyle={styles.list}
+    />
+  );
+}
+
+function RecipeRow({ recipe }: { recipe: Recipe }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowTitle}>{recipe.name}</Text>
+      <Text>
+        {recipe.category} • {recipe.time}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-    gap: 12,
+  list: {
+    padding: 16,
+    gap: 8,
   },
+
   title: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: "600",
-    textAlign: "center",
+    marginBottom: 8,
   },
-  body: {
-    fontSize: 16,
-    textAlign: "center",
+
+  searchRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
   },
-  hint: {
-    marginTop: 24,
-    fontSize: 12,
-    color: "#6b7280",
-    textAlign: "center",
+
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#9ca3af",
+    borderRadius: 8,
+    padding: 10,
+    marginRight: 8,
+  },
+
+  button: {
+    backgroundColor: "#ff7a1a",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+
+  row: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: "#f3f4f6",
+  },
+
+  rowTitle: {
+    fontWeight: "600",
+    fontSize: 18,
+    marginBottom: 4,
   },
 });
