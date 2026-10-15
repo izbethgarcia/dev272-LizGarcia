@@ -1,4 +1,5 @@
-import { recipes, type Recipe } from "@/data/recipes";
+import RecipeRow from "@/components/RecipeRow";
+import { recipes } from "@/data/recipes";
 import { useState } from "react";
 import {
   FlatList, Pressable, StyleSheet, Text, TextInput, View
@@ -6,12 +7,20 @@ import {
 
 export default function Index() {
   const [query, setQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("")
+  const filteredRecipes = recipes.filter(
+    (recipe) => 
+      recipe.name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+      recipe.category.toLowerCase().includes(searchQuery.trim().toLowerCase())
+);
+    
 
   return (
     <FlatList
-      data={recipes}
+      data={filteredRecipes}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => <RecipeRow recipe={item} />}
+      ListEmptyComponent={<Text>No recipes match</Text>}
       ListHeaderComponent={
         <View>
           <Text style={styles.title}>My Recipes</Text>
@@ -26,28 +35,27 @@ export default function Index() {
               returnKeyType="search"
             />
 
-            <Pressable
-              style={styles.button}
-              onPress={() => console.log("Search:", query)}
-            >
-              <Text style={styles.buttonText}>Search</Text>
-            </Pressable>
+         <Pressable
+          style={styles.button}
+          onPress={() => setSearchQuery(query)}
+        >
+          <Text style={styles.buttonText}>Search</Text>
+      </Pressable>
+
+        <Pressable
+         style={styles.button}
+         onPress={() => {
+           setQuery("");
+           setSearchQuery("");
+          }}
+      >
+         <Text style={styles.buttonText}>Clear</Text>
+      </Pressable>
           </View>
         </View>
       }
       contentContainerStyle={styles.list}
     />
-  );
-}
-
-function RecipeRow({ recipe }: { recipe: Recipe }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowTitle}>{recipe.name}</Text>
-      <Text>
-        {recipe.category} • {recipe.time}
-      </Text>
-    </View>
   );
 }
 
@@ -91,15 +99,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  row: {
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: "#f3f4f6",
-  },
 
-  rowTitle: {
-    fontWeight: "600",
-    fontSize: 18,
-    marginBottom: 4,
-  },
 });
