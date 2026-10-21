@@ -1,6 +1,6 @@
 import type { Recipe } from "@/data/recipes";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function RecipeRow({ recipe }: { recipe: Recipe }) {
   return (
@@ -14,22 +14,48 @@ export default function RecipeRow({ recipe }: { recipe: Recipe }) {
       }
     >
       <Text style={styles.rowTitle}>{recipe.name}</Text>
-      <Text>
-        {recipe.category} • {recipe.time}
-      </Text>
+
+      <View style={styles.categoryRow}>
+        <Text style={styles.categoryTag}>{recipe.mealType}</Text>
+        <Text style={styles.categoryTag}>{recipe.category}</Text>
+      </View>
+
+      <Text style={styles.time}>{recipe.time} minutes</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   row: {
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: "#f3f4f6",
+    padding: 16,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E8CBD2",
+    marginBottom: 8,
+    gap: 8,
   },
   rowTitle: {
-    fontWeight: "600",
+    fontWeight: "700",
     fontSize: 18,
-    marginBottom: 4,
+    color: "#704653",
+  },
+  categoryRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  categoryTag: {
+    backgroundColor: "#F8E5EA",
+    color: "#704653",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    overflow: "hidden",
+    fontSize: 13,
+  },
+  time: {
+    color: "#806A70",
+    fontSize: 14,
   },
 });
